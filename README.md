@@ -22,7 +22,11 @@ space = np.random.random((4,3))
 rows = ['first', 'second', 'third', 'fourth']
 columns = ['one', 'two', 'three']
 readme_title = 'Random semantic space'
-readme_description = 'This semantic space was genarated for demonstartion.\nHave fun!'
+readme_description = 'This semantic space was genarated for demonstration.\nHave fun!'
+
+
+# save semantic space
+from semspaces.io import SemanticSpaceMarket
 
 ssm = SemanticSpaceMarket('sspace.zip', 'w')
 ssm.write_all(space, rows, columns, readme_title, readme_description)
