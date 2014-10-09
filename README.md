@@ -12,6 +12,8 @@ python setup.py install
 
 ## Usage
 
+### Semantic space market input output
+
 Writing a semantic space based on a numpy matrix:
 
 ```python
@@ -48,4 +50,16 @@ rssm = SemanticSpaceMarket('sspace.zip', 'r')
 rssm.read_all()
 rssm.read_to_pandas()
 rssm.close()
+```
+
+### Reading Google's word2vec output
+
+To read csv file produced by Google's word2vec tool:
+
+```python
+from semspaces.io import W2VReader
+
+word_vectors = W2VReader.read_file('word2vec-vectors.csv')
+words, space = W2VReader.read_to_numpy('word2vec-vectors.csv')
+words_space = W2VReader.read_to_pandas('word2vec-vectors.csv')
 ```

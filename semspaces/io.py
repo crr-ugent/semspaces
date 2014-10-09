@@ -1,6 +1,9 @@
 """
 Save and load files in a semantic space format.
 """
+import codecs
+import csv
+
 import fs.zipfs
 import scipy.io
 
@@ -8,6 +11,11 @@ try:
     import pandas as pd
 except ImportError:
     print 'Warning: pandas not available. Importing to pandas will not work.'
+
+try:
+    import numpy as np
+except ImportError:
+    print 'Warning: pandas not available. Importing to numpy will not work.'
 
 
 class AbstractSemanticSpace(object):
@@ -154,5 +162,39 @@ class ZipSemanticSpace(AbstractSemanticSpace):
     def create_fs(uri, mode):
         return fs.zipfs.ZipFS(uri, mode)
 
+
 class SemanticSpaceMarket(ZipSemanticSpace):
     """Default semantic space input output class"""
+
+
+# Interoperability with  word2vec google tool
+
+class W2VReader(object):
+    """Reads word vectors in text format created by Google's word2vec tool"""
+    @staticmethod
+    def read_file(fname):
+        """Return a tuple with (words, [list of vector values])."""
+        fin = open(fname, 'rb')
+        w2v_reader = csv.reader(fin, delimiter=' ')
+        dims = w2v_reader.next()
+        nrow, ncol = int(dims[0]), int(dims[1])
+        word_vectors = []
+        for row in w2v_reader:
+            word = row[0]
+            word_vector = [float(v) for v in row[1: ncol + 1]]
+            word_vectors.append((word, word_vector))
+        return word_vectors
+
+    @classmethod
+    def read_to_numpy(cls, fname):
+        """Return a tuple with (words, numpy array with vectors)"""
+        word_vectors = cls.read_file(fname)
+        words, vectors = zip(*word_vectors)
+        return(words, np.array(vectors))
+
+    @classmethod
+    def read_to_pandas(cls, fname):
+        """Return a tuple with (words, numpy array with vectors)"""
+        word_vectors = cls.read_file(fname)
+        words, vectors = zip(*word_vectors)
+        return pd.DataFrame(np.array(vectors), index=words)
