@@ -194,7 +194,7 @@ class W2VReader(object):
 
     @classmethod
     def read_to_pandas(cls, fname):
-        """Return a tuple with (words, numpy array with vectors)"""
+        """Return a pandas DataFrame with a semantic space."""
         word_vectors = cls.read_file(fname)
         words, vectors = zip(*word_vectors)
         return pd.DataFrame(np.array(vectors), index=words)
