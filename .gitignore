@@ -1,3 +1,7 @@
+build/
+dist/
+semspaces.egg-info/
+
 *.pyc
 
 *.swo

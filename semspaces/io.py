@@ -10,10 +10,12 @@ except ImportError:
     print 'Warning: pandas not available. Importing to pandas will not work.'
 
 
-class AbstractSemSpace(object):
+class AbstractSemanticSpace(object):
     """Read and write from/to semantic space format."""
-    def __init__(self, uri, mode='r'):
-        self.root_file = self.create_fs(uri, mode)
+    def __init__(self, fname, mode='r'):
+        self.fname = fname
+        self.mode = mode
+        self.root_file = self.create_fs(fname, mode)
 
     @staticmethod
     def create_fs(uri, mode):
@@ -129,11 +131,8 @@ class AbstractSemSpace(object):
             self.write_cols(cols)
         self.write_readme(readme_title, readme_desc)
 
-    def write_from_pandas(self, df, readme=None):
+    def write_from_pandas(self, df, readme_title='', readme_desc=''):
         """Write a semantic space from pandas data frame"""
-        if readme is not None:
-            readme_title = readme['title']
-            readme_desc = readme['description']
         rows = list(df.index)
         cols = list(df.columns)
         self.write_all(df.as_matrix(), rows, cols, readme_title, readme_desc)
@@ -141,12 +140,19 @@ class AbstractSemSpace(object):
     def close(self):
         self.root_file.close()
 
+    def __repr__(self):
+        class_name = self.__class__.__name__
+        return "%s('%s', '%s')" % (class_name, self.fname, self.mode)
+
     def __del__(self):
         self.close()
 
 
-class ZipSemSpace(AbstractSemSpace):
+class ZipSemanticSpace(AbstractSemanticSpace):
     """Read and write from/to semantic space format Zip file."""
     @staticmethod
     def create_fs(uri, mode):
         return fs.zipfs.ZipFS(uri, mode)
+
+class SemanticSpaceMarket(ZipSemanticSpace):
+    """Default semantic space input output class"""
