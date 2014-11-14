@@ -15,7 +15,7 @@ except ImportError:
 try:
     import numpy as np
 except ImportError:
-    print 'Warning: pandas not available. Importing to numpy will not work.'
+    print 'Warning: numpy not available. Importing to numpy will not work.'
 
 
 class AbstractSemanticSpace(object):
